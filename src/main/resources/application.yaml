@@ -1,5 +1,23 @@
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
 spring:
   application:
     name: vibecoder
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vibecoder
+    username: postgres
+    password: 2305
+    driver-class-name: org.postgresql.Driver
 
+  jpa:
+    hibernate:
+      ddl-auto: update   # use: none | validate | update | create | create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
