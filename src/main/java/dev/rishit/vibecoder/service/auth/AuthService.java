@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +64,12 @@ public class AuthService {
         }
 
         throw new UnableToGenerateTokenException("Error Generating JWT_Token");
+    }
+
+    public UserDto userProfile(PostgresqlUserPrincipal principal){
+        return userRepository.findByEmail(principal.getUsername())
+                .map(userMapper)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
 }

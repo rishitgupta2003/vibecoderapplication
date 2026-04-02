@@ -24,9 +24,7 @@ public class User {
     String passwordHash;
 
 
-    String avatarUrl = """
-                https://static.vecteezy.com/system/resources/previews/026/434/409/non_2x/default-avatar-profile-icon-social-media-user-photo-vector.jpg
-            """;
+    String avatarUrl = "https://static.vecteezy.com/system/resources/previews/026/434/409/non_2x/default-avatar-profile-icon-social-media-user-photo-vector.jpg";
 
     @ToString.Exclude
     Instant createdAt;

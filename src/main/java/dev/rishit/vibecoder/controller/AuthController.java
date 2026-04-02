@@ -10,6 +10,7 @@ import dev.rishit.vibecoder.service.UserService;
 import dev.rishit.vibecoder.service.auth.PostgresqlUserPrincipal;
 import dev.rishit.vibecoder.service.mapper.UserMapper;
 import dev.rishit.vibecoder.util.ResponseBuilder;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -32,22 +33,20 @@ public class AuthController {
     final UserMapper userMapper;
 
     @PostMapping("/signup")
-    public ResponseEntity<Map<String, Object>> signUp(@RequestBody SignUpRequest signUpRequest){
+    public ResponseEntity<Map<String, Object>> signUp(@Valid @RequestBody SignUpRequest signUpRequest){
         UserDto userDto = authService.registerUser(signUpRequest);
         return responseBuilder.buildCreatedResponse(Map.of("message", "User created successfully", "user", userDto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginRequest loginRequest){
         String user_token = authService.logInUser(loginRequest);
         return responseBuilder.buildOkResponse(user_token);
     }
     
     @GetMapping("/profile")
     public ResponseEntity<Map<String, Object>> profile(@AuthenticationPrincipal PostgresqlUserPrincipal principal) {
-        return userRepository.findByEmail(principal.getUsername())
-                .map(userMapper)
-                .map(responseBuilder::buildOkResponse)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserDto userDto = authService.userProfile(principal);
+        return responseBuilder.buildOkResponse(userDto);
     }
 }

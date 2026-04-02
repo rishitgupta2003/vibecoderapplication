@@ -1,6 +1,6 @@
 app:
   jwt:
-    secret: qCaXEibAKRNDlDZXQ8c0DMBi5FM6OTVK4z4ornZZkTM=
+    secret: ${jwt_secret}
     expiration: 864000000 # 24 hours in milliseconds
 
 logging:
@@ -15,12 +15,12 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/vibecoder
     username: postgres
-    password: 2305
+    password: ${db_pass}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: create   # use: none | validate | update | create | create-drop
+      ddl-auto: update   # use: none | validate | update | create | create-drop
     show-sql: true
     properties:
       hibernate:

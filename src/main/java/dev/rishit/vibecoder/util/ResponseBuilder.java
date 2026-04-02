@@ -43,4 +43,13 @@ public class ResponseBuilder {
         );
     }
 
+    public ResponseEntity<Map<String, Object>> buildBadRequestResponse(Object data){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                Map.of(
+                        "status", "error",
+                        "message", data
+                )
+        );
+    }
+
 }
