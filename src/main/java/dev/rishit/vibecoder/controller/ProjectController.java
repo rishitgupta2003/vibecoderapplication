@@ -1,4 +1,91 @@
 package dev.rishit.vibecoder.controller;
 
+import dev.rishit.vibecoder.service.ProjectService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/projects")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProjectController {
+
+    final ProjectService projectService;
+
+    // Project CRUD
+    @PostMapping
+    public Object createProject(@RequestBody Object request) {
+        // TODO: Complete Logic
+        return null;
+    }
+
+    @GetMapping("/{id}")
+    public Object getProject(@PathVariable Long id) {
+        // TODO: Complete Logic
+        return null;
+    }
+
+    @GetMapping
+    public Object getAllProjects() {
+        // TODO: Complete Logic
+        return null;
+    }
+
+    @PutMapping("/{id}")
+    public Object updateProject(@PathVariable Long id, @RequestBody Object request) {
+        // TODO: Complete Logic
+        return null;
+    }
+
+    @DeleteMapping("/{id}")
+    public Object deleteProject(@PathVariable Long id) {
+        // TODO: Complete Logic
+        return null;
+    }
+
+    // Files
+    @GetMapping("/{id}/files")
+    public Object getFileTree(@PathVariable Long id) {
+        // TODO: Complete Logic
+        return null;
+    }
+
+    @GetMapping("/{id}/files/**")
+    public Object downloadFile(@PathVariable Long id) {
+        // TODO: Complete Logic
+        return null;
+    }
+
+    @GetMapping("/{id}/download-zip")
+    public Object downloadZip(@PathVariable Long id) {
+        // TODO: Complete Logic
+        return null;
+    }
+
+    // Sharing & Permissions
+    @GetMapping("/{id}/members")
+    public Object getAllMembers(@PathVariable Long id) {
+        // TODO: Complete Logic
+        return null;
+    }
+
+    @PostMapping("/{id}/members")
+    public Object inviteMember(@PathVariable Long id, @RequestBody Object request) {
+        // TODO: Complete Logic
+        return null;
+    }
+
+    @PatchMapping("/{id}/members/{userId}")
+    public Object changeMemberRole(@PathVariable Long id, @PathVariable Long userId, @RequestBody Object request) {
+        // TODO: Complete Logic
+        return null;
+    }
+
+    @DeleteMapping("/{id}/members/{userId}")
+    public Object removeMember(@PathVariable Long id, @PathVariable Long userId) {
+        // TODO: Complete Logic
+        return null;
+    }
 }
