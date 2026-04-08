@@ -1,12 +1,12 @@
 package dev.rishit.vibecoder.controller;
 
 
-import dev.rishit.vibecoder.dto.LoginRequest;
-import dev.rishit.vibecoder.dto.SignUpRequest;
-import dev.rishit.vibecoder.dto.UserDto;
+import dev.rishit.vibecoder.dto.auth.AuthResponse;
+import dev.rishit.vibecoder.dto.auth.LoginRequest;
+import dev.rishit.vibecoder.dto.auth.SignUpRequest;
+import dev.rishit.vibecoder.dto.auth.UserDto;
 import dev.rishit.vibecoder.repository.UserRepository;
 import dev.rishit.vibecoder.service.auth.AuthService;
-import dev.rishit.vibecoder.service.UserService;
 import dev.rishit.vibecoder.service.auth.PostgresqlUserPrincipal;
 import dev.rishit.vibecoder.service.mapper.UserMapper;
 import dev.rishit.vibecoder.util.ResponseBuilder;
@@ -15,7 +15,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +39,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginRequest loginRequest){
-        String user_token = authService.logInUser(loginRequest);
-        return responseBuilder.buildOkResponse(user_token);
+        AuthResponse userToken = authService.logInUser(loginRequest);
+        return responseBuilder.buildOkResponse(userToken);
     }
     
     @GetMapping("/profile")

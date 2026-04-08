@@ -1,9 +1,10 @@
 package dev.rishit.vibecoder.service.auth;
 
 
-import dev.rishit.vibecoder.dto.LoginRequest;
-import dev.rishit.vibecoder.dto.SignUpRequest;
-import dev.rishit.vibecoder.dto.UserDto;
+import dev.rishit.vibecoder.dto.auth.AuthResponse;
+import dev.rishit.vibecoder.dto.auth.LoginRequest;
+import dev.rishit.vibecoder.dto.auth.SignUpRequest;
+import dev.rishit.vibecoder.dto.auth.UserDto;
 import dev.rishit.vibecoder.entity.User;
 import dev.rishit.vibecoder.exceptions.UnableToGenerateTokenException;
 import dev.rishit.vibecoder.repository.UserRepository;
@@ -16,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +51,7 @@ public class AuthService {
         return userMapper.apply(save);
     }
 
-    public String logInUser(LoginRequest loginRequest){
+    public AuthResponse logInUser(LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         if(authentication.isAuthenticated()){
@@ -59,7 +59,7 @@ public class AuthService {
             if(user.isPresent()){
                 String token = jwtUtil.generateToken(userMapper.apply(user.get()).toString());
                 log.info("User Token -> {}", token);
-                return token;
+                return new AuthResponse(token, user.map(userMapper).orElse(null));
             }
         }
 

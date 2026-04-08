@@ -1,6 +1,5 @@
 package dev.rishit.vibecoder.util;
 
-import dev.rishit.vibecoder.dto.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

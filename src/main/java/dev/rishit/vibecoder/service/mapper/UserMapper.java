@@ -1,6 +1,6 @@
 package dev.rishit.vibecoder.service.mapper;
 
-import dev.rishit.vibecoder.dto.UserDto;
+import dev.rishit.vibecoder.dto.auth.UserDto;
 import dev.rishit.vibecoder.entity.User;
 import org.springframework.stereotype.Component;
 
