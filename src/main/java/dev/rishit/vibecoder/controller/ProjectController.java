@@ -4,7 +4,10 @@ import dev.rishit.vibecoder.service.ProjectService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -16,7 +19,7 @@ public class ProjectController {
 
     // Project CRUD
     @PostMapping
-    public Object createProject(@RequestBody Object request) {
+    public ResponseEntity<Map<String, Object>> createProject(@RequestBody Object request) {
         // TODO: Complete Logic
         return null;
     }
