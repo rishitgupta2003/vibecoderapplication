@@ -2,7 +2,7 @@ package dev.rishit.vibecoder.util;
 
 
 import com.google.gson.Gson;
-import dev.rishit.vibecoder.dto.UserDto;
+import dev.rishit.vibecoder.dto.auth.UserDto;
 import dev.rishit.vibecoder.service.auth.PostgresqlUserDetailService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
