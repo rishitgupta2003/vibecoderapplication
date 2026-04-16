@@ -7,8 +7,5 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProjectService {
-     //TODO -> Populate with Required Methods
+public interface ProjectService {
 }

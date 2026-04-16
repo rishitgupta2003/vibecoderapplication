@@ -1,6 +1,6 @@
 app:
   jwt:
-    secret: ${jwt_secret}
+    secret: qCaXEibAKRNDlDZXQ8c0DMBi5FM6OTVK4z4ornZZkTM
     expiration: 864000000 # 24 hours in milliseconds
 
 logging:
@@ -15,7 +15,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/vibecoder
     username: postgres
-    password: ${db_pass}
+    password: 2305
     driver-class-name: org.postgresql.Driver
 
   jpa:

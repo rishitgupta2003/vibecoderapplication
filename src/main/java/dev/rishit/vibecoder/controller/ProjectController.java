@@ -66,29 +66,4 @@ public class ProjectController {
         // TODO: Complete Logic
         return null;
     }
-
-    // Sharing & Permissions
-    @GetMapping("/{id}/members")
-    public Object getAllMembers(@PathVariable Long id) {
-        // TODO: Complete Logic
-        return null;
-    }
-
-    @PostMapping("/{id}/members")
-    public Object inviteMember(@PathVariable Long id, @RequestBody Object request) {
-        // TODO: Complete Logic
-        return null;
-    }
-
-    @PatchMapping("/{id}/members/{userId}")
-    public Object changeMemberRole(@PathVariable Long id, @PathVariable Long userId, @RequestBody Object request) {
-        // TODO: Complete Logic
-        return null;
-    }
-
-    @DeleteMapping("/{id}/members/{userId}")
-    public Object removeMember(@PathVariable Long id, @PathVariable Long userId) {
-        // TODO: Complete Logic
-        return null;
-    }
 }
