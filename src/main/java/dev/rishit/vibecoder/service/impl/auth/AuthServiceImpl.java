@@ -30,8 +30,9 @@ import java.util.Optional;
 public class AuthServiceImpl implements AuthService {
     final AuthenticationManager authenticationManager;
     final UserRepository userRepository;
-    final PasswordEncoder passwordEncoder;
     final UserMapper userMapper;
+    final PasswordEncoder passwordEncoder;
+
     final JwtUtil jwtUtil;
 
     public UserDto registerUser(SignUpRequest signUpRequest){
@@ -48,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
 
         log.info(save.toString());
 
-        return userMapper.apply(save);
+        return userMapper.toUserDto(save);
     }
 
     public AuthResponse logInUser(LoginRequest loginRequest){
@@ -57,9 +58,9 @@ public class AuthServiceImpl implements AuthService {
         if(authentication.isAuthenticated()){
             Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
             if(user.isPresent()){
-                String token = jwtUtil.generateToken(userMapper.apply(user.get()).toString());
+                String token = jwtUtil.generateToken(userMapper.toUserDto(user.get()).toString());
                 log.info("User Token -> {}", token);
-                return new AuthResponse(token, user.map(userMapper).orElse(null));
+                return new AuthResponse(token, user.map(userMapper::toUserDto).orElse(null));
             }
         }
 
@@ -68,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
 
     public UserDto userProfile(PostgresqlUserPrincipal principal){
         return userRepository.findByEmail(principal.getUsername())
-                .map(userMapper)
+                .map(userMapper::toUserDto)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

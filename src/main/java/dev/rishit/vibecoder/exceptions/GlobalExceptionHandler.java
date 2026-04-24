@@ -1,6 +1,6 @@
-package dev.rishit.vibecoder.util;
+package dev.rishit.vibecoder.exceptions;
 
-import dev.rishit.vibecoder.exceptions.UnableToGenerateTokenException;
+import dev.rishit.vibecoder.util.ResponseBuilder;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -33,6 +33,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnableToGenerateTokenException.class)
     public ResponseEntity<Map<String, Object>> handleUnableToGenerateTokenException(UnableToGenerateTokenException ex){
         return responseBuilder.buildConflictResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(
+            {
+                    UserNotFoundException.class, ProjectNotFoundException.class
+            }
+    )
+    public ResponseEntity<Map<String, Object>> handleNotFound(RuntimeException ex){
+        return responseBuilder.buildNotFoundResponse(ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

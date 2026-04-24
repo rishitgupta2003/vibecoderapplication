@@ -5,6 +5,7 @@ import dev.rishit.vibecoder.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,7 @@ public class PostgresqlUserDetailService implements UserDetailsService {
     final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(@NonNull String email) throws UsernameNotFoundException {
         Optional<User> userResult = userRepository.findByEmail(email);
 
         if(userResult.isEmpty()){
@@ -46,6 +47,11 @@ public class PostgresqlUserDetailService implements UserDetailsService {
             @Override
             public String getUsername() {
                 return user.getEmail();
+            }
+
+            @Override
+            public Long getUserId() {
+                return user.getId();
             }
         };
     }

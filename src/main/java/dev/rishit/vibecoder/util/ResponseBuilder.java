@@ -52,4 +52,22 @@ public class ResponseBuilder {
         );
     }
 
+    public ResponseEntity<Map<String, Object>> buildNotFoundResponse(Object data) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                Map.of(
+                        "status", "error",
+                        "message", data
+                )
+        );
+    }
+
+    public ResponseEntity<Map<String, Object>> buildNoContentResponse(){
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(
+                        Map.of(
+                                "status", "success",
+                                "message", "Requested Operation Executed"
+                        )
+                );
+    }
 }

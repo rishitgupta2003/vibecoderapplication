@@ -1,5 +1,7 @@
 package dev.rishit.vibecoder.controller;
 
+import dev.rishit.vibecoder.service.ProjectMemberService;
+import dev.rishit.vibecoder.util.ResponseBuilder;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +15,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProjectMemberController {
+
+    ProjectMemberService projectMemberService;
+    ResponseBuilder responseBuilder;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAllMembers(@PathVariable Long id) {
