@@ -85,8 +85,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void softDelete(PostgresqlUserPrincipal loggedInUser, Long projectId) {
-        ProjectResponse userProjectById = getUserProjectById(loggedInUser, projectId);
-        Project project = projectMapper.toProject(userProjectById);
+        Project project = projectRepository.findAccessibleProjectById(projectId, loggedInUser.getUserId())
+                .orElseThrow(() -> new ProjectNotFoundException(String.valueOf(projectId)));
+
         project.setDeletedAt(Instant.now());
         projectRepository.save(project);
     }
