@@ -1,45 +1,55 @@
 package dev.rishit.vibecoder.controller;
 
+import dev.rishit.vibecoder.dto.member.InviteMemberRequest;
+import dev.rishit.vibecoder.dto.member.MemberResponse;
+import dev.rishit.vibecoder.dto.member.UpdateMemberRoleRequest;
 import dev.rishit.vibecoder.service.ProjectMemberService;
-import dev.rishit.vibecoder.util.ResponseBuilder;
-import lombok.AccessLevel;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/projects/{id}/members")
+@RequestMapping("/api/projects/{projectId}/members")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProjectMemberController {
 
-    ProjectMemberService projectMemberService;
-    ResponseBuilder responseBuilder;
+    private final ProjectMemberService projectMemberService;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllMembers(@PathVariable Long id) {
-        // TODO -> Complete Logic
-        return null;
+    public ResponseEntity<List<MemberResponse>> getProjectMembers(@PathVariable Long projectId) {
+        return ResponseEntity.ok(projectMemberService.getProjectMembers(projectId));
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> inviteByEmail(@PathVariable Long id, @RequestBody Object request) {
-        // TODO -> Complete Logic
-        return null;
+    public ResponseEntity<MemberResponse> inviteMember(
+            @PathVariable Long projectId,
+            @RequestBody @Valid InviteMemberRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                projectMemberService.inviteMember(projectId, request)
+        );
     }
 
-    @PatchMapping("/{userId}")
-    public ResponseEntity<Map<String, Object>> changeRole(@PathVariable Long id, @PathVariable Long userId, @RequestBody Object request) {
-        // TODO -> Complete Logic
-        return null;
+    @PatchMapping("/{memberId}")
+    public ResponseEntity<MemberResponse> updateMemberRole(
+            @PathVariable Long projectId,
+            @PathVariable Long memberId,
+            @RequestBody @Valid UpdateMemberRoleRequest request
+    ) {
+        return ResponseEntity.ok(projectMemberService.updateMemberRole(projectId, memberId, request));
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Map<String, Object>> removeMember(@PathVariable Long id, @PathVariable Long userId) {
-        // TODO -> Complete Logic
-        return null;
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<Void> removeMember(
+            @PathVariable Long projectId,
+            @PathVariable Long memberId
+    ) {
+        projectMemberService.removeProjectMember(projectId, memberId);
+        return ResponseEntity.noContent().build();
     }
+
 }

@@ -2,16 +2,10 @@ package dev.rishit.vibecoder.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Size;
 
-@Getter
-@Setter
-public class LoginRequest {
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
-    String email;
-
-    @NotBlank(message = "Password is required")
-    String password;
+public record LoginRequest(
+        @NotBlank @Email String username,
+        @Size(min = 4, max = 50) String password
+) {
 }

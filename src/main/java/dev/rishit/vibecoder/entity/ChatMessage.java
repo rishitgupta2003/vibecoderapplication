@@ -1,6 +1,5 @@
 package dev.rishit.vibecoder.entity;
 
-
 import dev.rishit.vibecoder.enums.MessageRole;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,10 +20,9 @@ public class ChatMessage {
 
     MessageRole role;
 
-    String toolCalls; //JSON Array of Tools Called
+    String toolCalls; // JSON Array of Tools Called
 
-    Integer tokenUsed;
+    Integer tokensUsed;
 
     Instant createdAt;
-
 }

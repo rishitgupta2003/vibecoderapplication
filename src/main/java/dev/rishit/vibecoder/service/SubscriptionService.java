@@ -1,7 +1,14 @@
 package dev.rishit.vibecoder.service;
 
-import org.springframework.stereotype.Service;
+import dev.rishit.vibecoder.dto.subscription.CheckoutRequest;
+import dev.rishit.vibecoder.dto.subscription.CheckoutResponse;
+import dev.rishit.vibecoder.dto.subscription.PortalResponse;
+import dev.rishit.vibecoder.dto.subscription.SubscriptionResponse;
 
-@Service
 public interface SubscriptionService {
+    SubscriptionResponse getCurrentSubscription(Long userId);
+
+    CheckoutResponse createCheckoutSessionUrl(CheckoutRequest request, Long userId);
+
+    PortalResponse openCustomerPortal(Long userId);
 }

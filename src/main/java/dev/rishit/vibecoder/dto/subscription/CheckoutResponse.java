@@ -1,6 +1,4 @@
 package dev.rishit.vibecoder.dto.subscription;
 
-public record CheckoutResponse(
-        String checkoutUrl
-) {
+public record CheckoutResponse(String checkoutUrl) {
 }

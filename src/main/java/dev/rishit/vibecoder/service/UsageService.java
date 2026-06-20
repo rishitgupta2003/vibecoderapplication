@@ -1,7 +1,10 @@
 package dev.rishit.vibecoder.service;
 
-import org.springframework.stereotype.Service;
+import dev.rishit.vibecoder.dto.subscription.PlanLimitsResponse;
+import dev.rishit.vibecoder.dto.subscription.UsageTodayResponse;
 
-@Service
 public interface UsageService {
+     UsageTodayResponse getTodayUsageOfUser(Long userId);
+
+    PlanLimitsResponse getCurrentSubscriptionLimitsOfUser(Long userId);
 }

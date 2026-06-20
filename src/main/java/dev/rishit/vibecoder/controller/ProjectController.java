@@ -4,78 +4,62 @@ import dev.rishit.vibecoder.dto.project.ProjectRequest;
 import dev.rishit.vibecoder.dto.project.ProjectResponse;
 import dev.rishit.vibecoder.dto.project.ProjectSummaryResponse;
 import dev.rishit.vibecoder.service.ProjectService;
-import dev.rishit.vibecoder.service.auth.PostgresqlUserPrincipal;
-import dev.rishit.vibecoder.util.ResponseBuilder;
-import lombok.AccessLevel;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProjectController {
 
-    ProjectService projectService;
-    ResponseBuilder responseBuilder;
+    private final ProjectService projectService;
 
-    // Project CRUD
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> createProject(@RequestBody ProjectRequest request, @AuthenticationPrincipal PostgresqlUserPrincipal loggedInUser) {
-        ProjectResponse project = projectService.createProject(request, loggedInUser);
-        return responseBuilder.buildCreatedResponse(project);
+    @GetMapping
+    public ResponseEntity<List<ProjectSummaryResponse>> getMyProjects() {
+        return ResponseEntity.ok(projectService.getUserProjects());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getProject(@PathVariable Long id, @AuthenticationPrincipal PostgresqlUserPrincipal loggedInUser) {
-        ProjectResponse userProjectById = projectService.getUserProjectById(loggedInUser, id);
-        return responseBuilder.buildOkResponse(userProjectById);
+    public ResponseEntity<ProjectResponse> getProjectById(@PathVariable Long id) {
+        return ResponseEntity.ok(projectService.getUserProjectById(id));
     }
 
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllProjects(@AuthenticationPrincipal PostgresqlUserPrincipal loggedInUser) {
-        List<ProjectSummaryResponse> userProject = projectService.getUserProject(loggedInUser);
-        return responseBuilder.buildOkResponse(userProject);
+    @PostMapping
+    public ResponseEntity<ProjectResponse> createProject(@RequestBody @Valid ProjectRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject(request));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateProject(
-            @AuthenticationPrincipal PostgresqlUserPrincipal loggedInUser,
-            @PathVariable Long id, @RequestBody ProjectRequest request)
-    {
-        ProjectResponse projectResponse = projectService.updateProject(id, request,  loggedInUser);
-
-        return responseBuilder.buildOkResponse(projectResponse);
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long id, @RequestBody @Valid ProjectRequest request) {
+        return ResponseEntity.ok(projectService.updateProject(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> deleteProject(@AuthenticationPrincipal PostgresqlUserPrincipal loggedInUser ,@PathVariable Long id) {
-        projectService.softDelete(loggedInUser, id);
-        return responseBuilder.buildNoContentResponse();
+    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
+        projectService.softDelete(id);
+        return ResponseEntity.noContent().build();
     }
 
-    // Files
-    @GetMapping("/{id}/files")
-    public ResponseEntity<Map<String, Object>> getFileTree(@PathVariable Long id) {
-        // TODO: Complete Logic
-        return null;
-    }
-
-    @GetMapping("/{id}/files/**")
-    public ResponseEntity<Map<String, Object>> downloadFile(@PathVariable Long id) {
-        // TODO: Complete Logic
-        return null;
-    }
-
-    @GetMapping("/{id}/download-zip")
-    public ResponseEntity<Map<String, Object>> downloadZip(@PathVariable Long id) {
-        // TODO: Complete Logic
-        return null;
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

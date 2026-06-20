@@ -1,8 +1,7 @@
 package dev.rishit.vibecoder.service;
 
-import org.springframework.stereotype.Service;
+import dev.rishit.vibecoder.dto.auth.UserProfileResponse;
 
-@Service
 public interface UserService {
-
+    UserProfileResponse getProfile(Long userId);
 }

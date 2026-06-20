@@ -4,91 +4,125 @@ import dev.rishit.vibecoder.dto.project.ProjectRequest;
 import dev.rishit.vibecoder.dto.project.ProjectResponse;
 import dev.rishit.vibecoder.dto.project.ProjectSummaryResponse;
 import dev.rishit.vibecoder.entity.Project;
+import dev.rishit.vibecoder.entity.ProjectMember;
+import dev.rishit.vibecoder.entity.ProjectMemberId;
 import dev.rishit.vibecoder.entity.User;
-import dev.rishit.vibecoder.exceptions.ProjectNotFoundException;
-import dev.rishit.vibecoder.exceptions.UserNotFoundException;
+import dev.rishit.vibecoder.enums.ProjectRole;
+import dev.rishit.vibecoder.error.ResourceNotFoundException;
+import dev.rishit.vibecoder.mapper.ProjectMapper;
+import dev.rishit.vibecoder.repository.ProjectMemberRepository;
 import dev.rishit.vibecoder.repository.ProjectRepository;
 import dev.rishit.vibecoder.repository.UserRepository;
+import dev.rishit.vibecoder.security.AuthUtil;
 import dev.rishit.vibecoder.service.ProjectService;
-import dev.rishit.vibecoder.service.auth.PostgresqlUserDetailService;
-import dev.rishit.vibecoder.service.auth.PostgresqlUserPrincipal;
-import dev.rishit.vibecoder.service.mapper.ProjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Transactional
+@EnableMethodSecurity
 public class ProjectServiceImpl implements ProjectService {
 
     ProjectRepository projectRepository;
     UserRepository userRepository;
     ProjectMapper projectMapper;
+    ProjectMemberRepository projectMemberRepository;
+    AuthUtil authUtil;
 
     @Override
-    public ProjectResponse createProject(ProjectRequest request, PostgresqlUserPrincipal loggedInUser) {
-        User owner = userRepository.findByEmail(loggedInUser.getUsername())
-                .orElseThrow(() -> new UserNotFoundException(loggedInUser.getUsername()));
+    public ProjectResponse createProject(ProjectRequest request) {
+        Long userId = authUtil.getCurrentUserId();
+//        User owner = userRepository.findById(userId).orElseThrow(
+//                () -> new ResourceNotFoundException("User", userId.toString())
+//        );
+        User owner = userRepository.getReferenceById(userId);
 
         Project project = Project.builder()
                 .name(request.name())
                 .isPublic(false)
-                .owner(owner)
                 .build();
+        project = projectRepository.save(project);
 
-        Project saveProject = projectRepository.save(project);
-        return projectMapper.toProjectResponse(saveProject);
-    }
 
-    @Override
-    public List<ProjectSummaryResponse> getUserProject(PostgresqlUserPrincipal loggedInUser) {
-        List<Project> projectByOwner = projectRepository.getUserProject(loggedInUser.getUserId());
-
-//        return projectByOwner
-//                .stream()
-//                .map(projectMapper::toProjectSummaryResponse)
-//                .toList();
-
-        return projectMapper
-                .toListProjectSummaryResponse(projectByOwner);
-    }
-
-    @Override
-    public ProjectResponse getUserProjectById(PostgresqlUserPrincipal loggedInUser, Long projectId) {
-        Project project = projectRepository
-                .findAccessibleProjectById(projectId, loggedInUser.getUserId())
-                .orElseThrow( () ->  new ProjectNotFoundException(String.valueOf(projectId)));
+        ProjectMemberId projectMemberId = new ProjectMemberId(project.getId(), owner.getId());
+        ProjectMember projectMember = ProjectMember.builder()
+                .id(projectMemberId)
+                .projectRole(ProjectRole.OWNER)
+                .user(owner)
+                .acceptedAt(Instant.now())
+                .invitedAt(Instant.now())
+                .project(project)
+                .build();
+        projectMemberRepository.save(projectMember);
 
         return projectMapper.toProjectResponse(project);
     }
 
     @Override
-    public ProjectResponse updateProject(Long id, ProjectRequest request, PostgresqlUserPrincipal loggedInUser) {
-        Project project = projectRepository
-                .findAccessibleProjectById(id, loggedInUser.getUserId())
-                .orElseThrow( () ->  new ProjectNotFoundException(String.valueOf(id)));
-
-        project.setName(request.name());
-
-        Project save = projectRepository.save(project);
-
-        return projectMapper.toProjectResponse(save);
+    public List<ProjectSummaryResponse> getUserProjects() {
+        Long userId = authUtil.getCurrentUserId();
+        var projects = projectRepository.findAllAccessibleByUser(userId);
+        return projectMapper.toListOfProjectSummaryResponse(projects);
     }
 
     @Override
-    public void softDelete(PostgresqlUserPrincipal loggedInUser, Long projectId) {
-        Project project = projectRepository.findAccessibleProjectById(projectId, loggedInUser.getUserId())
-                .orElseThrow(() -> new ProjectNotFoundException(String.valueOf(projectId)));
+    /*
+    * PreAuthorize() -> uses `SpEL`: Spring Expression Language
+    * @<component_name>.<method_name>.#<argument_variables>
+    */
+    @PreAuthorize(
+            "@security.canViewProject(#projectId)"
+    )
+    public ProjectResponse getUserProjectById(Long projectId) {
+        Long userId = authUtil.getCurrentUserId();
+        Project project = getAccessibleProjectById(projectId, userId);
+        return projectMapper.toProjectResponse(project);
+    }
+
+    @Override
+    @PreAuthorize(
+            "@security.canEditProject(#projectId)"
+    )
+    public ProjectResponse updateProject(Long projectId, ProjectRequest request) {
+        Long userId = authUtil.getCurrentUserId();
+        Project project = getAccessibleProjectById(projectId, userId);
+
+        project.setName(request.name());
+        project = projectRepository.save(project);
+
+        return projectMapper.toProjectResponse(project);
+    }
+
+    @Override
+    //Trying another way (SpEL)
+//    @PreAuthorize(
+//            "@security.hasPermission(#projectId, T(dev.rishit.vibecoder.enums.ProjectPermission).DELETE)"
+//    )
+    @PreAuthorize(
+            "@security.canDeleteProject(#projectId)"
+    )
+    public void softDelete(Long projectId) {
+        Long userId = authUtil.getCurrentUserId();
+        Project project = getAccessibleProjectById(projectId, userId);
 
         project.setDeletedAt(Instant.now());
         projectRepository.save(project);
+    }
+
+    ///  INTERNAL FUNCTIONS
+
+    public Project getAccessibleProjectById(Long projectId, Long userId) {
+        return projectRepository.findAccessibleProjectById(projectId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project", projectId.toString()));
     }
 }

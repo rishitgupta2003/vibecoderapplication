@@ -1,31 +1,32 @@
-app:
-  jwt:
-    secret: qCaXEibAKRNDlDZXQ8c0DMBi5FM6OTVK4z4ornZZkTM
-    expiration: 864000000 # 24 hours in milliseconds
-
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
-
 spring:
   application:
     name: vibecoder
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/vibecoder
-    username: postgres
-    password: 2305
+    url: jdbc:postgresql://localhost:5432/vibecoder?TimeZone=UTC
+    username: vibesql
+    password: root2305
     driver-class-name: org.postgresql.Driver
+
+  ai:
+    azure:
+      openai:
+        api-key: ${DIAL_API_KEY}
+        endpoint: ${DIAL_ENDPOINT}
 
   jpa:
     hibernate:
-      ddl-auto: update   # use: none | validate | update | create | create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+jwt:
+  secret-key: as9b7aodlbjfkluosfd789ujeklfnlsduf90b8ha908w74tuqijvlckajdl
 
 cors:
   allowed-origins: "*"

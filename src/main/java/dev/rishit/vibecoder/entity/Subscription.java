@@ -1,6 +1,5 @@
 package dev.rishit.vibecoder.entity;
 
-
 import dev.rishit.vibecoder.enums.SubscriptionStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,6 +14,7 @@ import java.time.Instant;
 public class Subscription {
 
     Long id;
+
     User user;
     Plan plan;
 
@@ -24,11 +24,9 @@ public class Subscription {
     String stripeSubscriptionId;
 
     Instant currentPeriodStart;
-    Instant currentPeriodEnt;
-
+    Instant currentPeriodEnd;
     Boolean cancelAtPeriodEnd = false;
 
     Instant createdAt;
     Instant updatedAt;
-
 }

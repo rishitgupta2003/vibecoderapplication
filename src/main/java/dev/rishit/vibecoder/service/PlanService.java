@@ -1,7 +1,9 @@
 package dev.rishit.vibecoder.service;
 
-import org.springframework.stereotype.Service;
+import dev.rishit.vibecoder.dto.subscription.PlanResponse;
 
-@Service
+import java.util.List;
+
 public interface PlanService {
+     List<PlanResponse> getAllActivePlans();
 }

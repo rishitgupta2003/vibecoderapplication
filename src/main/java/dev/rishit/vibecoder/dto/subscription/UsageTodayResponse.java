@@ -1,9 +1,9 @@
 package dev.rishit.vibecoder.dto.subscription;
 
 public record UsageTodayResponse(
-        int tokenUsed,
-        int tokensLimit,
-        int previewsRunning,
-        int previewsLimit
+        Integer tokensUsed,
+        Integer tokensLimit,
+        Integer previewsRunning,
+        Integer previewsLimit
 ) {
 }

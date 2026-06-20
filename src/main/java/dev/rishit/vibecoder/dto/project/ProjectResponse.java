@@ -1,6 +1,6 @@
 package dev.rishit.vibecoder.dto.project;
 
-import dev.rishit.vibecoder.dto.auth.UserDto;
+import dev.rishit.vibecoder.dto.auth.UserProfileResponse;
 
 import java.time.Instant;
 
@@ -9,5 +9,6 @@ public record ProjectResponse(
         String name,
         Instant createdAt,
         Instant updatedAt,
-        UserDto owner
-) {}
+        UserProfileResponse owner
+) {
+}

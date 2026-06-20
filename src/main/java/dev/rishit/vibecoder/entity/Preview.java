@@ -12,12 +12,13 @@ import java.time.Instant;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Preview {
+
     Long id;
+
     Project project;
 
     String namespace;
     String podName;
-
     String previewUrl;
 
     PreviewStatus status;
@@ -26,4 +27,5 @@ public class Preview {
     Instant terminatedAt;
 
     Instant createdAt;
+
 }

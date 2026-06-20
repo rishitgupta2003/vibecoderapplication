@@ -2,10 +2,10 @@ package dev.rishit.vibecoder.dto.subscription;
 
 import java.time.Instant;
 
-public record SubscriptionResponse (
+public record SubscriptionResponse(
         PlanResponse plan,
         String status,
         Instant periodEnd,
         Long tokensUsedThisCycle
-){
+) {
 }

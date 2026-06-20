@@ -1,8 +1,5 @@
 package dev.rishit.vibecoder.enums;
 
 public enum MessageRole {
-    USER,
-    ASSISTANT,
-    SYSTEM,
-    TOOL
+    USER, ASSISTANT, SYSTEM, TOOL
 }
